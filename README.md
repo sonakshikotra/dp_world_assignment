@@ -1,6 +1,7 @@
 # dp_world_assignment
 
 To run this project, the SQL code needs to be executed first, followed by Python code.
+The password is private, so please use your own password for running the code. 
 
 The SQL code creates a database to store AIS data and Port coordinates.
 
