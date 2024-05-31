@@ -1,0 +1,115 @@
+-- Create a new database
+CREATE DATABASE dp_world_assg;
+ 
+--Connect to the new database
+\c dp_world_assg;
+ 
+-- Create user role
+CREATE USER sktr WITH PASSWORD '***********'; --use your own username and password
+GRANT ALL PRIVILEGES ON DATABASE dp_world_assg TO sktr;
+ 
+--- Create table for AIS data
+CREATE TABLE ais_2020_01 (
+mmsi VARCHAR(20),
+basedatetime TIMESTAMP,
+LAT DECIMAL,
+LON DECIMAL,
+SOG VARCHAR(50),
+COG VARCHAR(50),
+Heading VARCHAR(50),
+VesselName VARCHAR(50),
+IMO  VARCHAR(50),
+CallSign  VARCHAR(50),
+VesselType INTEGER,
+Status VARCHAR(50),
+Length DECIMAL,
+Width DECIMAL,
+Draft DECIMAL,
+Cargo VARCHAR(50),
+TransceiverClass VARCHAR(50)
+);
+ 
+--- Create table for port coordinates containing only necessary columns
+CREATE TABLE port (
+“Main Port Name” VARCHAR(200),
+“UN/LOCODE” VARCHAR(200),
+“Country Code” VARCHAR(200),
+Latitude DECIMAL,
+Longitude DECIMAL
+);
+  
+--- Import AIS data
+COPY ais_2020_01(mmsi, 
+BaseDateTime,
+LAT,
+LON,
+SOG,
+COG,
+Heading,
+VesselName,
+IMO,
+CallSign,
+VesselType,
+Status,
+Length,
+Width,
+Draft,
+Cargo,
+TransceiverClass) FROM 'C:\Users\Lenovo\Downloads\AIS_2020_01_01.csv' 
+DELIMITER ',' CSV HEADER; 
+ 
+COPY ais_2020_01(mmsi, 
+BaseDateTime,
+LAT,
+LON,
+SOG,
+COG,
+Heading,
+VesselName,
+IMO,
+CallSign,
+VesselType,
+Status,
+Length,
+Width,
+Draft,
+Cargo,
+TransceiverClass) FROM 'C:\Users\Lenovo\Downloads\AIS_2020_01_02.csv'
+DELIMITER ',' CSV HEADER; 
+ 
+-- Import port coordinates 
+COPY port(
+“Main Port Name”, 
+“UN/LOCODE”, 
+“Country Code”, 
+Latitude,
+Longitude
+) FROM 'C:\Users\Lenovo\Downloads\UpdatedPub150v2.csv' 
+DELIMITER ',' CSV HEADER;
+
+--- Renaming the columns
+ALTER TABLE port
+RENAME COLUMN “Main Port Name” TO port_name;
+
+ALTER TABLE port
+RENAME COLUMN “UN/LOCODE” TO port_code;
+
+ALTER TABLE port
+RENAME COLUMN “Country Code” TO country_code;
+
+
+ --- viewing the database tables
+\d
+--- checking the count of records in each table
+SELECT count(*) 
+FROM ais_2020_01;
+
+SELECT count(*) 
+FROM port;
+
+--- viewing the Port of Long Beach coordinates
+SELECT * 
+FROM port 
+WHERE port_code=”US LGB”;
+ 
+
